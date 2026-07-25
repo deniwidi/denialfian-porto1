@@ -1,0 +1,204 @@
+═══════════════════════════════════════════════════════════════
+  PANDUAN MENGISI KONTEN WEBSITE
+═══════════════════════════════════════════════════════════════
+
+Semua file konten diletakkan di folder  images/
+
+
+───────────────────────────────────────────────────────────────
+1. KARYA DI CANVAS HOME  (menu Graphic / All / Project)
+───────────────────────────────────────────────────────────────
+
+Menu di bawah punya 3 pilihan: Graphic, All, Project.
+Graphic dan Project memakai penamaan file yang BERBEDA:
+
+  MENU GRAPHIC
+    gambar :  graphic-01.jpg   graphic-02.jpg   ...  graphic-60.jpg
+    video  :  graphicvid-01.mp4   graphicvid-02.mp4   ...
+
+  MENU PROJECT
+    gambar :  project-01.jpg   project-02.jpg   ...  project-24.jpg
+    video  :  projectvid-01.mp4   projectvid-02.mp4   ...
+
+  MENU ALL  -> otomatis menampilkan gabungan Graphic + Project
+              (tidak perlu file sendiri)
+
+Format gambar boleh .jpg atau .png (situs mencoba .jpg dulu, lalu .png).
+Nomor harus BERURUTAN mulai dari 01, tidak boleh melompat.
+Kalau file belum ada, tile-nya tampil sebagai kotak gradien berwarna.
+
+Saat ini website disiapkan untuk:
+    Graphic : 50 gambar + 14 video
+    Project : 10 gambar + 2 video
+
+
+───────────────────────────────────────────────────────────────
+2. CARA MENAMBAH JUMLAH KARYA
+───────────────────────────────────────────────────────────────
+
+Buka file  js/main.js , cari bagian paling atas bertuliskan
+"KATALOG KONTEN". Isinya seperti ini:
+
+    const CATALOG = {
+      graphic: { images: 50, videos: 14 },
+      project: { images: 10, videos: 2 },
+    };
+
+Cukup ubah angkanya, lalu taruh file barunya dengan nomor lanjutan.
+
+CONTOH — menambah 5 gambar graphic (50 -> 55):
+    1. Ubah  images: 50   menjadi   images: 55
+    2. Taruh file  graphic-51.jpg  sampai  graphic-55.jpg
+    3. Naikkan angka ?v= di index.html (lihat catatan bagian 9)
+    4. Simpan, refresh browser. Selesai.
+
+CONTOH — menambah 3 video project (2 -> 5):
+    1. Ubah  videos: 2   menjadi   videos: 5
+    2. Taruh file  projectvid-03.mp4  sampai  projectvid-05.mp4
+    3. Naikkan angka ?v= di index.html, simpan, refresh browser.
+
+Tidak ada batas maksimal — angka boleh dinaikkan sebanyak apa pun.
+Video otomatis disebar acak di antara gambar (tidak sejajar), dan
+hanya video yang mendapat label "video".
+
+PENTING: angka di CATALOG harus SAMA dengan jumlah file yang ada.
+  - Angka LEBIH BESAR dari jumlah file -> muncul kotak gradien kosong
+  - Angka LEBIH KECIL dari jumlah file -> sisa file tidak ditampilkan
+
+
+───────────────────────────────────────────────────────────────
+3. UKURAN FILE YANG DISARANKAN
+───────────────────────────────────────────────────────────────
+
+MENU GRAPHIC
+  gambar ->  1900 x 1200 px  (mendatar / landscape)
+  video  ->  1080 x 1920 px  (tegak / vertical, seperti reels)
+
+MENU PROJECT  (rasio layar / screen 16:9)
+  gambar ->  1920 x 1080 px
+  video  ->  1920 x 1080 px
+             Cocok untuk screenshot & rekaman layar website/aplikasi.
+             Karya ditampilkan UTUH (tidak dipotong) di frame ini.
+
+Semua video format MP4 (H.264). Klip pendek lebih ringan.
+
+Di canvas home, gambar/video dipotong otomatis (crop) mengikuti
+bentuk tile-nya, jadi taruh objek penting di bagian tengah.
+
+Perilaku video:
+  - Di CANVAS : berputar otomatis, loop, tanpa suara. Otomatis
+                berhenti saat tile-nya keluar layar (hemat performa).
+  - Saat DIKLIK: diputar di frame besar, ada kontrol player,
+                 bersuara, dan tetap loop.
+
+
+───────────────────────────────────────────────────────────────
+4. JUDUL & KETERANGAN TIAP PROJECT (BERBEDA-BEDA)
+───────────────────────────────────────────────────────────────
+
+Buka js/main.js, cari bagian "JUDUL & DESKRIPSI TIAP KARYA"
+(PROJECT_DETAILS). Kuncinya adalah NAMA FILE tanpa ekstensi:
+
+    const PROJECT_DETAILS = {
+      "graphic-01": {
+        title: "Mothers Day Poster",
+        info: "I made this project for the Mothers Day event. 2025",
+      },
+      "graphicvid-01": {
+        title: "Eid Collection Promo",
+        info: "Short promo video for the Eid collection. 2025",
+      },
+    };
+
+Tambahkan blok baru untuk tiap karya yang ingin diberi judul dan
+deskripsi sendiri (jangan lupa koma di antara blok). Karya yang
+TIDAK ada di daftar otomatis memakai judul bawaan ("Graphic 05")
+dan teks DEFAULT_INFO yang ada di atasnya.
+
+Contoh menambah untuk graphic-07.jpg:
+
+      "graphic-07": {
+        title: "Ramadan Greeting Card",
+        info: "Greeting card design for Ramadan campaign. 2024",
+      },
+
+
+───────────────────────────────────────────────────────────────
+5. FOTO PROFIL  (menu About)
+───────────────────────────────────────────────────────────────
+
+Letakkan foto profilmu sebagai:   images/profile.jpg   (atau .png)
+
+
+───────────────────────────────────────────────────────────────
+6. ICON SKILL  (menu About)
+───────────────────────────────────────────────────────────────
+
+Letakkan di folder:  images/skills/
+Nama file mengikuti nama skill (huruf kecil, spasi jadi strip):
+
+    figma.jpg   html.jpg   css.jpg   javascript.jpg
+    photoshop.jpg   illustrator.jpg   after-effects.jpg   canva.jpg
+
+Daftar skill bisa diedit di array SKILLS dalam js/main.js.
+
+
+───────────────────────────────────────────────────────────────
+7. LOGO CLIENTS  (menu Clients)
+───────────────────────────────────────────────────────────────
+
+Letakkan di folder:  images/clients/
+Nama file:  client-01.jpg   client-02.jpg   ...   client-12.jpg
+
+Jumlah slot diatur lewat NUM_CLIENTS di js/main.js.
+
+
+───────────────────────────────────────────────────────────────
+8. RIWAYAT PENDIDIKAN, PENGALAMAN KERJA, KONTAK
+───────────────────────────────────────────────────────────────
+
+Edit langsung bagian ABOUT dan CONTACT di file  index.html
+
+
+───────────────────────────────────────────────────────────────
+9. MENGGANTI WARNA SLIDER MENU BAWAH (Graphic / All / Project)
+───────────────────────────────────────────────────────────────
+
+Buka file  css/style.css , di bagian PALING ATAS ada blok :root
+berisi 4 baris ini:
+
+    --seg-track: #e3e3e3;        <- warna dasar/latar slider
+    --seg-thumb: #ffffff;        <- kotak geser penanda menu aktif
+    --seg-text: #9a9a9a;         <- tulisan menu yang tidak aktif
+    --seg-text-active: #141414;  <- tulisan menu yang aktif
+
+Ganti kode warnanya sesuai selera. Contoh membuat penanda oren:
+
+    --seg-thumb: #ff6b5e;
+    --seg-text-active: #ffffff;
+
+Sedikit di bawahnya ada blok  html.dark {...}  berisi 4 baris yang
+sama — itu warna untuk DARK MODE. Ubah juga di sana kalau ingin
+warna dark mode ikut berubah:
+
+    --seg-track: #333333;
+    --seg-thumb: #565656;
+    --seg-text: #9b9b9b;
+    --seg-text-active: #ffffff;
+
+PENTING: setelah mengubah css/style.css atau js/main.js, buka
+index.html dan naikkan angka pada  ?v=5  (jadi ?v=6, dst) di dua
+baris paling atas & bawah. Ini memaksa browser memuat versi baru,
+bukan versi lama dari cache.
+
+
+───────────────────────────────────────────────────────────────
+10. WARNA TEMA LAINNYA
+───────────────────────────────────────────────────────────────
+
+Masih di blok :root pada css/style.css:
+
+    --accent-logo    : oren coral (tombol nama, dot timeline, loader)
+    --accent-about   : biru muda (tombol About & foto profil)
+    --accent-clients : kuning (tombol Clients)
+    --accent-contact : hijau (tombol Contact)
