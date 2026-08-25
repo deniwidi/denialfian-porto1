@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- gaya sama dengan tombol "Deni Alfian": latar putih, teks coral -->
-  <rect x="2" y="2" width="60" height="60" rx="16" ry="16"
-        fill="#ffffff" stroke="#ff6b5e" stroke-width="4"/>
-  <text x="32" y="33" fill="#ff6b5e"
-        font-family="Helvetica Neue, Segoe UI, Arial, sans-serif"
-        font-size="30" font-weight="800" letter-spacing="-0.5"
-        text-anchor="middle" dominant-baseline="central">DA</text>
-</svg>
