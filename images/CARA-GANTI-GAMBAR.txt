@@ -1,0 +1,305 @@
+═══════════════════════════════════════════════════════════════
+  PANDUAN MENGISI KONTEN WEBSITE
+═══════════════════════════════════════════════════════════════
+
+Semua file konten diletakkan di folder  images/
+
+
+───────────────────────────────────────────────────────────────
+1. KARYA DI CANVAS HOME  (menu Graphic / All / Project)
+───────────────────────────────────────────────────────────────
+
+Menu di bawah punya 3 pilihan: Graphic, All, Project.
+Graphic dan Project memakai penamaan file yang BERBEDA:
+
+  MENU GRAPHIC
+    gambar :  graphic-01.jpg   graphic-02.jpg   ...  graphic-60.jpg
+    video  :  graphicvid-01.mp4   graphicvid-02.mp4   ...
+
+  MENU PROJECT
+    gambar :  project-01.jpg   project-02.jpg   ...  project-24.jpg
+    video  :  projectvid-01.mp4   projectvid-02.mp4   ...
+
+  MENU ALL  -> otomatis menampilkan gabungan Graphic + Project
+              (tidak perlu file sendiri)
+
+Format gambar boleh .jpg atau .png (situs mencoba .jpg dulu, lalu .png).
+Nomor harus BERURUTAN mulai dari 01, tidak boleh melompat.
+Kalau file belum ada, tile-nya tampil sebagai kotak gradien berwarna.
+
+Saat ini website disiapkan untuk:
+    Graphic : 50 gambar + 14 video
+    Project : 12 gambar + 4 video
+
+
+───────────────────────────────────────────────────────────────
+2. CARA MENAMBAH JUMLAH KARYA
+───────────────────────────────────────────────────────────────
+
+Buka file  js/main.js , cari bagian paling atas bertuliskan
+"KATALOG KONTEN". Isinya seperti ini:
+
+    const CATALOG = {
+      graphic: { images: 50, videos: 14 },
+      project: { images: 12, videos: 4 },
+    };
+
+Cukup ubah angkanya, lalu taruh file barunya dengan nomor lanjutan.
+
+CONTOH — menambah 5 gambar graphic (50 -> 55):
+    1. Taruh file  graphic-51.jpg  sampai  graphic-55.jpg
+    2. Ubah  images: 50   menjadi   images: 55
+    3. Jalankan:  node tools/gen-media-sizes.js       <-- PENTING
+    4. Naikkan angka ?v= di index.html (lihat bagian 9)
+    5. Simpan, refresh browser. Selesai.
+
+CONTOH — menambah 3 video project (4 -> 7):
+    1. Taruh file  projectvid-05.mp4  sampai  projectvid-07.mp4
+    2. Ubah  videos: 4   menjadi   videos: 7
+    3. Jalankan:  node tools/gen-media-sizes.js
+    4. Naikkan angka ?v= di index.html, simpan, refresh browser.
+
+═══════════════════════════════════════════════════════════════
+  PENTING — 3 PERINTAH SETELAH MENAMBAH FILE
+═══════════════════════════════════════════════════════════════
+Jalankan berurutan dari folder Scroll setiap kali menambah atau
+mengganti gambar/video, SEBELUM deploy ke Vercel:
+
+    node tools/compress-videos.js     (kecilkan video + buat poster)
+    node tools/make-thumbs.js         (kecilkan gambar untuk canvas)
+    node tools/gen-media-sizes.js     (catat ukuran tiap file)
+
+Lalu naikkan angka ?v= di index.html, baru deploy.
+
+Kenapa penting: file mentah sangat berat (video bisa 13 MB per klip).
+Tanpa 3 perintah ini, beranda akan lama dimuat — terutama di HP.
+Hasil pengecilan: video 157 MB -> 12 MB, gambar 14 MB -> 1,8 MB.
+
+File video ASLI otomatis dipindah ke folder  video-original/
+(di luar folder Scroll) — tetap aman, tidak ikut ter-deploy.
+
+
+TENTANG  node tools/gen-media-sizes.js
+--------------------------------------
+Perintah ini membaca ukuran (lebar x tinggi) semua file dan
+menyimpannya ke js/media-sizes.js. Berkat daftar itu, website tidak
+perlu mengunduh gambar dulu hanya untuk tahu bentuknya — inilah yang
+membuat halaman terbuka cepat.
+
+Jalankan dari folder Scroll, setiap kali menambah/mengganti file.
+Kalau lupa menjalankannya, website tetap berfungsi (ukuran diukur
+sendiri oleh browser), hanya sedikit lebih lambat saat dibuka.
+
+Tidak ada batas maksimal — angka boleh dinaikkan sebanyak apa pun.
+Video otomatis disebar acak di antara gambar (tidak sejajar), dan
+hanya video yang mendapat label "video".
+
+PENTING: angka di CATALOG harus SAMA dengan jumlah file yang ada.
+  - Angka LEBIH BESAR dari jumlah file -> muncul kotak gradien kosong
+  - Angka LEBIH KECIL dari jumlah file -> sisa file tidak ditampilkan
+
+
+───────────────────────────────────────────────────────────────
+3. UKURAN FILE — BEBAS, IKUT FILE ASLI
+───────────────────────────────────────────────────────────────
+
+TIDAK ADA ukuran yang wajib. Saat karya DIKLIK, frame otomatis
+mengikuti rasio file yang kamu upload:
+
+    file 4:5   (1080 x 1350)  -> tampil 4:5
+    file 16:9  (1920 x 1080)  -> tampil 16:9
+    file 9:16  (1080 x 1920)  -> tampil 9:16 (tegak, seperti reels)
+    file 1:1   (1000 x 1000)  -> tampil kotak
+
+Karya selalu tampil UTUH — tidak dipotong, tidak digepengkan, dan
+tanpa bar hitam. Frame otomatis mengecil agar muat di layar.
+
+Jadi kamu bebas mengunggah campuran potret, lanskap, dan kotak.
+Saran: sisi terpanjang 1500-1920 px sudah cukup tajam dan ringan.
+
+Semua video format MP4 (H.264). Klip pendek lebih ringan.
+
+Di CANVAS HOME pun bentuk kotaknya sekarang mengikuti rasio asli
+file — gambar potret jadi kotak tinggi, lanskap jadi kotak lebar.
+Jadi karya tidak lagi dipotong di halaman depan.
+
+Rasio yang sangat ekstrem dibatasi otomatis (paling tinggi sekitar
+1:5.5, paling lebar sekitar 4.5:1) supaya satu kotak tidak memenuhi
+seluruh layar. Di luar itu, semua rasio ditampilkan apa adanya.
+
+Jarak antar kotak dibuat sedikit acak (16-34 px) supaya susunannya
+terasa alami, tapi tidak pernah menganga lebar.
+
+Judul karya muncul naik dari bawah kotak saat kursor diarahkan ke
+atasnya (di HP judul langsung tampil, karena tidak ada kursor).
+
+
+───────────────────────────────────────────────────────────────
+3b. AGAR WEBSITE TERBUKA CEPAT  (penting!)
+───────────────────────────────────────────────────────────────
+
+Tiga hal yang membuat beranda cepat dibuka:
+
+1. Website hanya mengunduh gambar/video yang sedang terlihat di
+   layar — jumlah karya sebanyak apa pun tidak menambah beban awal.
+
+2. Di canvas dipakai versi KECIL dari images/thumbs (maks 800 px),
+   bukan file asli. File asli hanya dipakai saat karya diklik.
+
+3. Video sudah dikecilkan ke 720p oleh tools/compress-videos.js dan
+   diberi "faststart", jadi mulai berjalan tanpa menunggu seluruh
+   file terunduh. Unduhannya juga diantrikan (1 di HP, 2 di web)
+   supaya tidak menyumbat jaringan.
+
+Kamu TIDAK perlu mengecilkan file sendiri — cukup taruh file mentah
+lalu jalankan 3 perintah di bagian atas panduan ini.
+
+Perilaku video:
+  - Di CANVAS : berputar otomatis, loop, tanpa suara. Otomatis
+                berhenti saat tile-nya keluar layar (hemat performa).
+  - Saat DIKLIK: diputar di frame besar, ada kontrol player,
+                 bersuara, dan tetap loop.
+
+
+───────────────────────────────────────────────────────────────
+4. JUDUL & KETERANGAN TIAP PROJECT (BERBEDA-BEDA)
+───────────────────────────────────────────────────────────────
+
+Buka js/main.js, cari bagian "JUDUL & DESKRIPSI TIAP KARYA"
+(PROJECT_DETAILS). Kuncinya adalah NAMA FILE tanpa ekstensi.
+
+Tiap karya punya 5 baris yang bisa diisi:
+
+    title    -> judul karya
+    info     -> deskripsi singkat
+    software -> software yang dipakai
+    collab   -> kerja sama dengan siapa
+    scope    -> lingkup pekerjaan
+
+Contoh:
+
+    const PROJECT_DETAILS = {
+      "graphic-01": {
+        title:    "Mothers Day Box Design",
+        info:     "I made this project for the Mothers Day event. 2025",
+        software: "Photoshop, Illustrator",
+        collab:   "Mr. Baker Kuwait",
+        scope:    "Packaging Design, Print",
+      },
+      "graphicvid-01": {
+        title:    "Eid Collection Promo",
+        info:     "Short promo video for the Eid collection. 2025",
+        software: "Premiere Pro, After Effects",
+        collab:   "Mr. Baker Kuwait",
+        scope:    "Video Editing, Motion Graphics",
+      },
+    };
+
+Tambahkan blok baru untuk tiap karya (jangan lupa koma di antara
+blok). Baris yang tidak dipakai boleh DIHAPUS saja — baris kosong
+otomatis disembunyikan, tidak muncul sebagai label kosong.
+
+Contoh yang hanya pakai judul & deskripsi:
+
+      "graphic-07": {
+        title: "Ramadan Greeting Card",
+        info:  "Greeting card design for Ramadan campaign. 2024",
+      },
+
+Karya yang TIDAK ada di daftar otomatis memakai judul bawaan
+("Graphic 05") dan teks DEFAULT_INFO yang ada di atasnya.
+
+
+───────────────────────────────────────────────────────────────
+5. FOTO PROFIL  (menu About)
+───────────────────────────────────────────────────────────────
+
+Letakkan foto profilmu sebagai:   images/profile.jpg   (atau .png)
+
+
+───────────────────────────────────────────────────────────────
+6. ICON SKILL  (menu About)
+───────────────────────────────────────────────────────────────
+
+Letakkan di folder:  images/skills/
+Nama file mengikuti nama skill (huruf kecil, spasi jadi strip):
+
+    figma.jpg   html.jpg   css.jpg   javascript.jpg
+    photoshop.jpg   illustrator.jpg   after-effects.jpg   canva.jpg
+
+Daftar skill bisa diedit di array SKILLS dalam js/main.js.
+
+
+───────────────────────────────────────────────────────────────
+7. LOGO CLIENTS  (menu Clients)
+───────────────────────────────────────────────────────────────
+
+Letakkan di folder:  images/clients/
+Nama file:  client-01.jpg   client-02.jpg   ...   client-12.jpg
+
+Jumlah slot diatur lewat NUM_CLIENTS di js/main.js.
+
+
+───────────────────────────────────────────────────────────────
+8. RIWAYAT PENDIDIKAN, PENGALAMAN KERJA, KONTAK
+───────────────────────────────────────────────────────────────
+
+Edit langsung bagian ABOUT dan CONTACT di file  index.html
+
+
+───────────────────────────────────────────────────────────────
+9. MENGGANTI WARNA SLIDER MENU BAWAH (Graphic / All / Project)
+───────────────────────────────────────────────────────────────
+
+Buka file  css/style.css , di bagian PALING ATAS ada blok :root
+berisi 4 baris ini:
+
+    --seg-track: #e3e3e3;        <- warna dasar/latar slider
+    --seg-thumb: #ffffff;        <- kotak geser penanda menu aktif
+    --seg-text: #9a9a9a;         <- tulisan menu yang tidak aktif
+    --seg-text-active: #141414;  <- tulisan menu yang aktif
+
+Ganti kode warnanya sesuai selera. Contoh membuat penanda oren:
+
+    --seg-thumb: #ff6b5e;
+    --seg-text-active: #ffffff;
+
+Sedikit di bawahnya ada blok  html.dark {...}  berisi 4 baris yang
+sama — itu warna untuk DARK MODE. Ubah juga di sana kalau ingin
+warna dark mode ikut berubah:
+
+    --seg-track: #333333;
+    --seg-thumb: #565656;
+    --seg-text: #9b9b9b;
+    --seg-text-active: #ffffff;
+
+PENTING: setelah mengubah css/style.css atau js/main.js, buka
+index.html dan naikkan angka pada  ?v=5  (jadi ?v=6, dst) di dua
+baris paling atas & bawah. Ini memaksa browser memuat versi baru,
+bukan versi lama dari cache.
+
+
+───────────────────────────────────────────────────────────────
+10. WARNA TEMA LAINNYA
+───────────────────────────────────────────────────────────────
+
+Masih di blok :root pada css/style.css:
+
+    --accent-logo    : oren coral (tombol nama, dot timeline, loader)
+    --accent-about   : biru muda (tombol About & foto profil)
+    --accent-clients : kuning (tombol Clients)
+    --accent-contact : hijau (tombol Contact)
+
+
+───────────────────────────────────────────────────────────────
+11. LOGO TAB BROWSER (favicon)
+───────────────────────────────────────────────────────────────
+
+Logo "DA" yang muncul di tab browser ada di:
+
+    images/favicon.svg       <- utama (bisa diedit dengan teks biasa)
+    images/favicon-32.png    <- cadangan untuk browser lama
+
+Warnanya mengikuti tombol "Deni Alfian": latar putih, huruf coral.
+Untuk mengganti, edit favicon.svg (ubah huruf DA atau kode warnanya),
+lalu naikkan angka ?v= di index.html supaya browser memuat ulang.
